@@ -1,13 +1,13 @@
 {
-    "NAME" : "COM.MDUFLOT.UTILITY",
-    "VERSION" : "0.0.22",
-    "DISPLAYNAME" : "UTILITY",
-    "DESCRIPTION" : "COLLECTION OF UTILITY FUNCTIONS TO BE USED IN UNITY.",
-    "UNITY" : "2021.3",
-    "AUTHOR" : "MDUFLOT",
-    "KEYWORDS" : ["UTILITY"],
-    "DEPENDENCIES" : {
-      "COM.UNITY.ADDRESSABLES" : "1.19.19",
-      "COM.UNITY.COLLECTIONS" : "1.2.4"
+    "name" : "com.mduflot.utility",
+    "version" : "0.0.22",
+    "displayName" : "Utility",
+    "description" : "Collection of utility functions to be used in Unity.",
+    "unity" : "2021.3",
+    "author" : "MDuflot",
+    "keywords" : ["Utility"],
+    "dependencies" : {
+      "com.unity.addressables" : "1.19.19",
+      "com.unity.collections" : "1.2.4"
     }
 }
