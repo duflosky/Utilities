@@ -45,6 +45,13 @@ public static class Helpers
         pos = new Vector3(pos.x, y, z);
         t.position = pos;
     }
+
+    public static void SetPos(this Transform t, float f)
+    {
+        var pos = t.position;
+        pos = new Vector3(f, f, f);
+        t.position = pos;
+    }
     
     #endregion
 
@@ -54,6 +61,41 @@ public static class Helpers
     {
         var scale = t.localScale;
         scale = new Vector3(scaleX, scale.y, scale.z);
+        t.localScale = scale;
+    }
+
+    public static void SetScaleY(this Transform t, float scaleY)
+    {
+        var scale = t.localScale;
+        scale = new Vector3(scale.x, scaleY, scale.z);
+        t.localScale = scale;
+    }
+
+    public static void SetScaleZ(this Transform t, float scaleZ)
+    {
+        var scale = t.localScale;
+        scale = new Vector3(scale.x, scale.y, scaleZ);
+        t.localScale = scale;
+    }
+
+    public static void SetScaleXY(this Transform t, float scaleX, float scaleY)
+    {
+        var scale = t.localScale;
+        scale = new Vector3(scaleX, scaleY, scale.z);
+        t.localScale = scale;
+    }
+
+    public static void SetScaleXZ(this Transform t, float scaleX, float scaleZ)
+    {
+        var scale = t.localScale;
+        scale = new Vector3(scaleX, scale.y, scaleZ);
+        t.localScale = scale;
+    }
+
+    public static void SetScaleYZ(this Transform t, float scaleY, float scaleZ)
+    {
+        var scale = t.localScale;
+        scale = new Vector3(scale.x, scaleY, scaleZ);
         t.localScale = scale;
     }
 

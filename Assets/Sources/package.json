@@ -1,11 +1,11 @@
 {
-    "name" : "com.mduflot.utility",
+    "name" : "com.mduflot.utilities",
     "version" : "0.0.22",
-    "displayName" : "Utility",
-    "description" : "Collection of utility functions to be used in Unity.",
+    "displayName" : "Utilities",
+    "description" : "Collection of utilities functions to be used in Unity.",
     "unity" : "2021.3",
     "author" : "MDuflot",
-    "keywords" : ["Utility"],
+    "keywords" : ["Utilities"],
     "dependencies" : {
       "com.unity.addressables" : "1.19.19",
       "com.unity.collections" : "1.2.4"
