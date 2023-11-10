@@ -3,12 +3,12 @@
     "version" : "0.0.22",
     "displayName" : "Utilities",
     "description" : "Collection of utilities functions to be used in Unity.",
-    "unity" : "2021.3",
+    "unity" : "2022.3",
     "author" : "MDuflot",
     "keywords" : ["Utilities"],
     "dependencies" : {
         "com.cysharp.unitask" : "2.5.0", 
-        "com.unity.addressables" : "1.19.19", 
-        "com.unity.collections" : "1.2.4"
+        "com.unity.addressables" : "1.21.19", 
+        "com.unity.collections" : "2.1.4"
     }
 }
