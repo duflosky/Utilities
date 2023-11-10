@@ -14,8 +14,8 @@ public class Pool<T> where T : Object
         this.defaultItem = defaultItem;
         for (int i = 0; i < count; i++)
         {
-            var currentElement = Object.Instantiate(defaultItem);
-            AddToPool(currentElement, callback);
+            var element = Object.Instantiate(defaultItem);
+            AddToPool(element, callback);
         }
     }
 
