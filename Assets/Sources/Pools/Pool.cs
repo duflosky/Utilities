@@ -49,6 +49,6 @@ public class Pool<T> where T : Object
     public IEnumerator AddToPoolLater(T item, float lifeTime)
     {
         yield return new WaitForSeconds(lifeTime);
-        pool.Enqueue(item);
+        AddToPool(item);
     }
 }
