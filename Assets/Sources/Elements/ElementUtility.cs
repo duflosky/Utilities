@@ -209,4 +209,14 @@ public static class ElementUtility
 
         return toggle;
     }
+
+    public static ListView CreateListView<T>(T[] items)
+    {
+        ListView listView = new ListView(items)
+        {
+            selectionType = SelectionType.Single
+        };
+
+        return listView;
+    }
 }
