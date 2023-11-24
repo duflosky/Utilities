@@ -242,6 +242,7 @@ public static class ElementUtility
     {
         ListView listView = new ListView(sourceList)
         {
+            itemsSource = sourceList,
             virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
             showFoldoutHeader = true,
             headerTitle = label,
