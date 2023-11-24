@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -208,5 +209,101 @@ public static class ElementUtility
         }
 
         return toggle;
+    }
+
+    public static ListView CreateListViewObjectField<T>(List<T> sourceList, string label = null,
+        bool allowSceneObjects = true) where T : UnityEngine.Object
+    {
+        ListView listView = new ListView(sourceList)
+        {
+            virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
+            showFoldoutHeader = true,
+            headerTitle = label,
+            showAddRemoveFooter = true,
+            reorderMode = ListViewReorderMode.Animated,
+            makeItem = () => new ObjectField
+            {
+                objectType = typeof(T),
+                allowSceneObjects = allowSceneObjects
+            },
+            bindItem = (element, i) =>
+            {
+                ((ObjectField)element).value = sourceList[i];
+                ((ObjectField)element).RegisterValueChangedCallback((value) => { sourceList[i] = (T)value.newValue; });
+            }
+        };
+
+        return listView;
+    }
+
+    public static ListView CreateListViewTuple<TEnum1, TEnum2, TEnum3>(
+        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null)
+        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
+    {
+        ListView listView = new ListView(sourceList)
+        {
+            virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
+            showFoldoutHeader = true,
+            headerTitle = label,
+            showAddRemoveFooter = true,
+            reorderMode = ListViewReorderMode.Animated,
+            makeItem = () =>
+            {
+                VisualElement element = new VisualElement();
+                element.Add(new Label("Tuple"));
+                element.Add(CreateTupleField<TEnum1, TEnum2, TEnum3>());
+                return element;
+            },
+            bindItem = (element, i) =>
+            {
+                if (element is TupleField<TEnum1, TEnum2, TEnum3> tupleField) tupleField.SetValue(sourceList[i]);
+            }
+        };
+
+        return listView;
+    }
+
+    private static TupleField<TEnum1, TEnum2, TEnum3> CreateTupleField<TEnum1, TEnum2, TEnum3>()
+        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
+    {
+        return new TupleField<TEnum1, TEnum2, TEnum3>();
+    }
+
+    public class TupleField<TEnum1, TEnum2, TEnum3> : VisualElement
+        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
+    {
+        private TEnum1 enum1;
+        private TEnum2 enum2;
+        private TEnum3 enum3;
+
+        private EnumField enumField1;
+        private EnumField enumField2;
+        private EnumField enumField3;
+
+        public TupleField()
+        {
+            enumField1 =
+                ElementUtility.CreateEnumField(enum1, "Job :", callback => { enum1 = (TEnum1)callback.newValue; });
+            enumField2 = ElementUtility.CreateEnumField(enum2, "Positive Traits :",
+                callback => { enum2 = (TEnum2)callback.newValue; });
+            enumField3 = ElementUtility.CreateEnumField(enum3, "Negative Traits :",
+                callback => { enum3 = (TEnum3)callback.newValue; });
+
+            Add(enumField1);
+            Add(enumField2);
+            Add(enumField3);
+        }
+
+        public void SetValue(SerializableTuple<TEnum1, TEnum2, TEnum3> value)
+        {
+            enumField1.SetValueWithoutNotify(value.Item1);
+            enumField2.SetValueWithoutNotify(value.Item2);
+            enumField3.SetValueWithoutNotify(value.Item3);
+        }
+
+        public (TEnum1, TEnum2, TEnum3) GetValue()
+        {
+            return ((TEnum1)enumField1.value, (TEnum2)enumField2.value, (TEnum3)enumField3.value);
+        }
     }
 }
