@@ -6,6 +6,12 @@ public class SerializableTuple<T1, T2>
     [SerializeField] public T1 Item1;
     [SerializeField] public T2 Item2;
 
+    public SerializableTuple()
+    {
+        Item1 = default;
+        Item2 = default;
+    }
+
     public SerializableTuple(T1 item1, T2 item2)
     {
         Item1 = item1;
@@ -19,6 +25,13 @@ public class SerializableTuple<T1, T2, T3>
     [SerializeField] public T1 Item1;
     [SerializeField] public T2 Item2;
     [SerializeField] public T3 Item3;
+
+    public SerializableTuple()
+    {
+        Item1 = default;
+        Item2 = default;
+        Item3 = default;
+    }
 
     public SerializableTuple(T1 item1, T2 item2, T3 item3)
     {
@@ -35,6 +48,14 @@ public class SerializableTuple<T1, T2, T3, T4>
     [SerializeField] public T2 Item2;
     [SerializeField] public T3 Item3;
     [SerializeField] public T4 Item4;
+
+    public SerializableTuple()
+    {
+        Item1 = default;
+        Item2 = default;
+        Item3 = default;
+        Item4 = default;
+    }
 
     public SerializableTuple(T1 item1, T2 item2, T3 item3, T4 item4)
     {
