@@ -257,10 +257,10 @@ public static class ElementUtility
             },
             bindItem = (element, i) =>
             {
-                ((TupleField<TEnum1, TEnum2, TEnum3>)element).SetValueWithoutNotify(sourceList[i]);
-                ((TupleField<TEnum1, TEnum2, TEnum3>)element).RegisterValueChangedCallback((value) =>
+                ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).SetValueWithoutNotify(sourceList[i]);
+                ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).RegisterValueChangedCallback((value) =>
                 {
-                    sourceList[i] = ((TupleField<TEnum1, TEnum2, TEnum3>)element).GetValue();
+                    sourceList[i] = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).GetValue();
                 });
             }
         };
@@ -306,9 +306,9 @@ public static class ElementUtility
 
         public void SetValueWithoutNotify(SerializableTuple<TEnum1, TEnum2, TEnum3> newValue)
         {
-            enumField1.SetValueWithoutNotify(value.Item1);
-            enumField2.SetValueWithoutNotify(value.Item2);
-            enumField3.SetValueWithoutNotify(value.Item3);
+            enumField1.SetValueWithoutNotify(newValue.Item1);
+            enumField2.SetValueWithoutNotify(newValue.Item2);
+            enumField3.SetValueWithoutNotify(newValue.Item3);
         }
 
         public SerializableTuple<TEnum1, TEnum2, TEnum3> value { get; set; }
