@@ -256,7 +256,11 @@ public static class ElementUtility
             },
             bindItem = (element, i) =>
             {
-                if (element is TupleField<TEnum1, TEnum2, TEnum3> tupleField) tupleField.SetValue(sourceList[i]);
+                if (element is TupleField<TEnum1, TEnum2, TEnum3> tupleField)
+                {
+                    tupleField.SetValue(sourceList[i]);
+                    sourceList[i] = tupleField.GetValue();
+                }
             }
         };
 
@@ -301,9 +305,9 @@ public static class ElementUtility
             enumField3.SetValueWithoutNotify(value.Item3);
         }
 
-        public (TEnum1, TEnum2, TEnum3) GetValue()
+        public SerializableTuple<TEnum1, TEnum2, TEnum3> GetValue()
         {
-            return ((TEnum1)enumField1.value, (TEnum2)enumField2.value, (TEnum3)enumField3.value);
+            return new SerializableTuple<TEnum1, TEnum2, TEnum3>((TEnum1)enumField1.value, (TEnum2)enumField2.value, (TEnum3)enumField3.value);
         }
     }
 }
