@@ -257,11 +257,11 @@ public static class ElementUtility
             },
             bindItem = (element, i) =>
             {
-                if (element is TupleField<TEnum1, TEnum2, TEnum3> tupleField)
+                ((TupleField<TEnum1, TEnum2, TEnum3>)element).SetValueWithoutNotify(sourceList[i]);
+                ((TupleField<TEnum1, TEnum2, TEnum3>)element).RegisterValueChangedCallback((value) =>
                 {
-                    tupleField.SetValue(sourceList[i]);
-                    sourceList[i] = tupleField.GetValue();
-                }
+                    sourceList[i] = ((TupleField<TEnum1, TEnum2, TEnum3>)element).GetValue();
+                });
             }
         };
 
@@ -274,7 +274,7 @@ public static class ElementUtility
         return new TupleField<TEnum1, TEnum2, TEnum3>();
     }
 
-    public class TupleField<TEnum1, TEnum2, TEnum3> : VisualElement
+    public class TupleField<TEnum1, TEnum2, TEnum3> : VisualElement, INotifyValueChanged<SerializableTuple<TEnum1, TEnum2, TEnum3>>
         where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
     {
         private TEnum1 enum1;
@@ -288,10 +288,10 @@ public static class ElementUtility
         public TupleField()
         {
             enumField1 =
-                ElementUtility.CreateEnumField(enum1, "Job :", callback => { enum1 = (TEnum1)callback.newValue; });
-            enumField2 = ElementUtility.CreateEnumField(enum2, "Positive Traits :",
+                CreateEnumField(enum1, "Job :", callback => { enum1 = (TEnum1)callback.newValue; });
+            enumField2 = CreateEnumField(enum2, "Positive Traits :",
                 callback => { enum2 = (TEnum2)callback.newValue; });
-            enumField3 = ElementUtility.CreateEnumField(enum3, "Negative Traits :",
+            enumField3 = CreateEnumField(enum3, "Negative Traits :",
                 callback => { enum3 = (TEnum3)callback.newValue; });
 
             Add(enumField1);
@@ -299,16 +299,18 @@ public static class ElementUtility
             Add(enumField3);
         }
 
-        public void SetValue(SerializableTuple<TEnum1, TEnum2, TEnum3> value)
+        public SerializableTuple<TEnum1, TEnum2, TEnum3> GetValue()
+        {
+            return new SerializableTuple<TEnum1, TEnum2, TEnum3>((TEnum1)enumField1.value, (TEnum2)enumField2.value, (TEnum3)enumField3.value);
+        }
+
+        public void SetValueWithoutNotify(SerializableTuple<TEnum1, TEnum2, TEnum3> newValue)
         {
             enumField1.SetValueWithoutNotify(value.Item1);
             enumField2.SetValueWithoutNotify(value.Item2);
             enumField3.SetValueWithoutNotify(value.Item3);
         }
 
-        public SerializableTuple<TEnum1, TEnum2, TEnum3> GetValue()
-        {
-            return new SerializableTuple<TEnum1, TEnum2, TEnum3>((TEnum1)enumField1.value, (TEnum2)enumField2.value, (TEnum3)enumField3.value);
-        }
+        public SerializableTuple<TEnum1, TEnum2, TEnum3> value { get; set; }
     }
 }
