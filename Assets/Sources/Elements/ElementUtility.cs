@@ -237,7 +237,7 @@ public static class ElementUtility
     }
 
     public static ListView CreateListViewTuple<TEnum1, TEnum2, TEnum3>(
-        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null)
+        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null, EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> onValueChanged = null)
         where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
     {
         ListView listView = new ListView(sourceList)
@@ -252,34 +252,27 @@ public static class ElementUtility
             {
                 VisualElement element = new VisualElement();
                 element.Add(new Label("Tuple"));
-                element.Add(CreateTupleField<TEnum1, TEnum2, TEnum3>());
+                element.Add(new TupleField<TEnum1, TEnum2, TEnum3>());
                 return element;
             },
             bindItem = (element, i) =>
             {
-                ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).SetValueWithoutNotify(sourceList[i]);
-                ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).RegisterValueChangedCallback((value) =>
+                ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).value = sourceList[i];
+                if (onValueChanged != null)
                 {
-                    sourceList[i] = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).GetValue();
-                });
+                    ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1)).RegisterValueChangedCallback(
+                        onValueChanged);
+                }
             }
         };
 
         return listView;
     }
 
-    private static TupleField<TEnum1, TEnum2, TEnum3> CreateTupleField<TEnum1, TEnum2, TEnum3>()
-        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
-    {
-        return new TupleField<TEnum1, TEnum2, TEnum3>();
-    }
-
     public class TupleField<TEnum1, TEnum2, TEnum3> : VisualElement, INotifyValueChanged<SerializableTuple<TEnum1, TEnum2, TEnum3>>
         where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
     {
-        private TEnum1 enum1;
-        private TEnum2 enum2;
-        private TEnum3 enum3;
+        public SerializableTuple<TEnum1, TEnum2, TEnum3> value { get; set; }
 
         private EnumField enumField1;
         private EnumField enumField2;
@@ -287,12 +280,11 @@ public static class ElementUtility
 
         public TupleField()
         {
-            enumField1 =
-                CreateEnumField(enum1, "Job :", callback => { enum1 = (TEnum1)callback.newValue; });
-            enumField2 = CreateEnumField(enum2, "Positive Traits :",
-                callback => { enum2 = (TEnum2)callback.newValue; });
-            enumField3 = CreateEnumField(enum3, "Negative Traits :",
-                callback => { enum3 = (TEnum3)callback.newValue; });
+            enumField1 = CreateEnumField(value.Item1, "Job :", callback => { value.Item1 = (TEnum1)callback.newValue; });
+            enumField2 = CreateEnumField(value.Item2, "Positive Traits :",
+                callback => { value.Item2 = (TEnum2)callback.newValue; });
+            enumField3 = CreateEnumField(value.Item3, "Negative Traits :",
+                callback => { value.Item3 = (TEnum3)callback.newValue; });
 
             Add(enumField1);
             Add(enumField2);
@@ -310,7 +302,5 @@ public static class ElementUtility
             enumField2.SetValueWithoutNotify(newValue.Item2);
             enumField3.SetValueWithoutNotify(newValue.Item3);
         }
-
-        public SerializableTuple<TEnum1, TEnum2, TEnum3> value { get; set; }
     }
 }
