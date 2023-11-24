@@ -266,6 +266,10 @@ public static class ElementUtility
             bindItem = (element, i) =>
             {
                 var tupleField = ((TupleField<TEnum, TObjectField>)element.ElementAt(1));
+                if (sourceList[i] == null)
+                {
+                    sourceList[i] = new SerializableTuple<TEnum, TObjectField>();
+                }
                 tupleField.value = sourceList[i];
                 tupleField.SetValueWithoutNotify(sourceList[i]);
                 tupleField.RegisterValueChangedCallback((value) =>
@@ -300,6 +304,10 @@ public static class ElementUtility
             bindItem = (element, i) =>
             {
                 var tupleField = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1));
+                if (sourceList[i] == null)
+                {
+                    sourceList[i] = new SerializableTuple<TEnum1, TEnum2, TEnum3>();
+                }
                 tupleField.value = sourceList[i];
                 tupleField.SetValueWithoutNotify(sourceList[i]);
                 tupleField.RegisterValueChangedCallback((value) =>
