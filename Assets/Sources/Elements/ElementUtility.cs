@@ -267,6 +267,7 @@ public static class ElementUtility
             {
                 var tupleField = ((TupleField<TEnum, TObjectField>)element.ElementAt(1));
                 tupleField.value = sourceList[i];
+                tupleField.SetValueWithoutNotify(sourceList[i]);
                 tupleField.RegisterValueChangedCallback((value) =>
                 {
                     sourceList[i] = (SerializableTuple<TEnum, TObjectField>)value.newValue;
@@ -300,6 +301,7 @@ public static class ElementUtility
             {
                 var tupleField = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1));
                 tupleField.value = sourceList[i];
+                tupleField.SetValueWithoutNotify(sourceList[i]);
                 tupleField.RegisterValueChangedCallback((value) =>
                 {
                     sourceList[i] = (SerializableTuple<TEnum1, TEnum2, TEnum3>)value.newValue;
@@ -321,10 +323,8 @@ public static class ElementUtility
 
         public TupleField()
         {
-            enumField = CreateEnumField(value.Item1, "Enum :",
-                callback => { value.Item1 = (TEnum)callback.newValue; });
-            objectField = CreateObjectField(value.Item2, typeof(TObjectField), "Object Field :",
-                callback => { value.Item2 = (TObjectField)callback.newValue; });
+            enumField = new EnumField();
+            objectField = new ObjectField();
 
             Add(enumField);
             Add(objectField);
@@ -349,12 +349,9 @@ public static class ElementUtility
 
         public TupleField()
         {
-            enumField1 = CreateEnumField(value.Item1, "Enum 1 :",
-                callback => { value.Item1 = (TEnum1)callback.newValue; });
-            enumField2 = CreateEnumField(value.Item2, "Enum 2 :",
-                callback => { value.Item2 = (TEnum2)callback.newValue; });
-            enumField3 = CreateEnumField(value.Item3, "Enum 3 :",
-                callback => { value.Item3 = (TEnum3)callback.newValue; });
+            enumField1 = new EnumField();
+            enumField2 = new EnumField();
+            enumField3 = new EnumField();
 
             Add(enumField1);
             Add(enumField2);
