@@ -235,8 +235,9 @@ public static class ElementUtility
             },
             bindItem = (element, i) =>
             {
-                ((ObjectField)element).value = sourceList[i];
-                ((ObjectField)element).RegisterValueChangedCallback((value) => { sourceList[i] = (T)value.newValue; });
+                var objectField = ((ObjectField)element.ElementAt(1));
+                objectField.value = sourceList[i];
+                objectField.RegisterValueChangedCallback((value) => { sourceList[i] = (T)value.newValue; });
             }
         };
 
@@ -244,7 +245,7 @@ public static class ElementUtility
     }
 
     public static ListView CreateListViewEnumObjectField<TEnum, TObjectField>(
-        List<SerializableTuple<TEnum, TObjectField>> sourceList, string label = null, EventCallback<ChangeEvent<SerializableTuple<TEnum, TObjectField>>> onValueChanged = null)
+        List<SerializableTuple<TEnum, TObjectField>> sourceList, string label = null)
         where TEnum : Enum where TObjectField : UnityEngine.Object
     {
         ListView listView = new ListView(sourceList)
@@ -266,14 +267,10 @@ public static class ElementUtility
             {
                 var tupleField = ((TupleField<TEnum, TObjectField>)element.ElementAt(1));
                 tupleField.value = sourceList[i];
-                if (onValueChanged != null)
+                tupleField.RegisterValueChangedCallback((value) =>
                 {
-                    tupleField.RegisterValueChangedCallback((value) =>
-                    {
-                        sourceList[i] = tupleField.GetValue();
-                        onValueChanged.Invoke(value);
-                    });
-                }
+                    sourceList[i] = (SerializableTuple<TEnum, TObjectField>)value.newValue;
+                });
             }
         };
 
@@ -281,8 +278,7 @@ public static class ElementUtility
     }
 
     public static ListView CreateListViewTuple<TEnum1, TEnum2, TEnum3>(
-        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null,
-        EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> onValueChanged = null)
+        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null)
         where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
     {
         ListView listView = new ListView(sourceList)
@@ -304,14 +300,10 @@ public static class ElementUtility
             {
                 var tupleField = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1));
                 tupleField.value = sourceList[i];
-                if (onValueChanged != null)
+                tupleField.RegisterValueChangedCallback((value) =>
                 {
-                    tupleField.RegisterValueChangedCallback((value) =>
-                    {
-                        sourceList[i] = tupleField.GetValue();
-                        onValueChanged.Invoke(value);
-                    });
-                }
+                    sourceList[i] = (SerializableTuple<TEnum1, TEnum2, TEnum3>)value.newValue;
+                });
             }
         };
 
@@ -336,11 +328,6 @@ public static class ElementUtility
 
             Add(enumField);
             Add(objectField);
-        }
-
-        public SerializableTuple<TEnum, TObjectField> GetValue()
-        {
-            return new SerializableTuple<TEnum, TObjectField>((TEnum)enumField.value, (TObjectField)objectField.value);
         }
 
         public void SetValueWithoutNotify(SerializableTuple<TEnum, TObjectField> newValue)
@@ -372,12 +359,6 @@ public static class ElementUtility
             Add(enumField1);
             Add(enumField2);
             Add(enumField3);
-        }
-
-        public SerializableTuple<TEnum1, TEnum2, TEnum3> GetValue()
-        {
-            return new SerializableTuple<TEnum1, TEnum2, TEnum3>((TEnum1)enumField1.value, (TEnum2)enumField2.value,
-                (TEnum3)enumField3.value);
         }
 
         public void SetValueWithoutNotify(SerializableTuple<TEnum1, TEnum2, TEnum3> newValue)
