@@ -363,7 +363,7 @@ public static class ElementUtility
         public TupleField()
         {
             enumField = CreateEnumField((TEnum)default);
-            objectField = CreateObjectField();
+            objectField = CreateObjectField((TObjectField)default);
 
             Add(enumField);
             Add(objectField);
