@@ -249,8 +249,7 @@ public static class ElementUtility
     }
 
     public static ListView CreateListViewEnumObjectField<TEnum, TObjectField>(
-        List<SerializableTuple<TEnum, TObjectField>> sourceList, string label = null,
-        EventCallback<ChangeEvent<SerializableTuple<TEnum, TObjectField>>> onValueChanged = null)
+        List<SerializableTuple<TEnum, TObjectField>> sourceList, string label = null)
         where TEnum : Enum where TObjectField : UnityEngine.Object
     {
         ListView listView = new ListView(sourceList)
@@ -265,160 +264,28 @@ public static class ElementUtility
             {
                 var element = new VisualElement();
                 element.Add(new Label("Tuple"));
-                element.Add(new TupleField<TEnum, TObjectField>());
+                element.Add(CreateEnumField(default(TEnum)));
+                element.Add(CreateObjectField(default(TObjectField), typeof(TObjectField)));
                 return element;
             },
             bindItem = (element, i) =>
             {
-                var tupleField = ((TupleField<TEnum, TObjectField>)element.ElementAt(1));
+                var enumField = (EnumField)element.ElementAt(1);
                 sourceList[i] ??= new SerializableTuple<TEnum, TObjectField>() { Item1 = default, Item2 = default };
-                tupleField.value = sourceList[i];
-                tupleField.SetValueWithoutNotify(sourceList[i]);
-                if (onValueChanged != null)
+                enumField.value = sourceList[i].Item1;
+                enumField.RegisterValueChangedCallback(evt =>
                 {
-                    tupleField.RegisterValueChangedCallback(onValueChanged);
-                }
+                    sourceList[i].Item1 = (TEnum)evt.newValue;
+                });
+                var objectField = (ObjectField)element.ElementAt(2);
+                objectField.value = sourceList[i].Item2;
+                objectField.RegisterValueChangedCallback(evt =>
+                {
+                    sourceList[i].Item2 = (TObjectField)evt.newValue;
+                });
             }
         };
 
         return listView;
-    }
-
-    public static ListView CreateListViewTuple<TEnum1, TEnum2, TEnum3>(
-        List<SerializableTuple<TEnum1, TEnum2, TEnum3>> sourceList, string label = null,
-        EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> onValueChanged = null)
-        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
-    {
-        ListView listView = new ListView(sourceList)
-        {
-            itemsSource = sourceList,
-            virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-            showFoldoutHeader = true,
-            headerTitle = label,
-            showAddRemoveFooter = true,
-            reorderMode = ListViewReorderMode.Animated,
-            makeItem = () =>
-            {
-                VisualElement element = new VisualElement();
-                element.Add(new Label("Tuple"));
-                element.Add(new TupleField<TEnum1, TEnum2, TEnum3>());
-                return element;
-            },
-            bindItem = (element, i) =>
-            {
-                var tupleField = ((TupleField<TEnum1, TEnum2, TEnum3>)element.ElementAt(1));
-                sourceList[i] ??= new SerializableTuple<TEnum1, TEnum2, TEnum3>()
-                    { Item1 = default, Item2 = default, Item3 = default };
-                tupleField.value = sourceList[i];
-                tupleField.SetValueWithoutNotify(sourceList[i]);
-                if (onValueChanged != null)
-                {
-                    tupleField.RegisterValueChangedCallback(onValueChanged);
-                }
-            }
-        };
-
-        return listView;
-    }
-
-    public class TupleField<TEnum, TObjectField> : VisualElement,
-        INotifyValueChanged<SerializableTuple<TEnum, TObjectField>>
-        where TEnum : Enum where TObjectField : UnityEngine.Object
-    {
-        private SerializableTuple<TEnum, TObjectField> _value;
-
-        public SerializableTuple<TEnum, TObjectField> value
-        {
-            get { return _value; }
-            set
-            {
-                if (_value != value)
-                {
-                    _value = value;
-                    NotifyValueChanged(_value);
-                }
-            }
-        }
-
-        public event EventCallback<ChangeEvent<SerializableTuple<TEnum, TObjectField>>> onValueChanged;
-
-        public void NotifyValueChanged(SerializableTuple<TEnum, TObjectField> newValue)
-        {
-            onValueChanged?.Invoke(new ChangeEvent<SerializableTuple<TEnum, TObjectField>>());
-        }
-
-        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<SerializableTuple<TEnum, TObjectField>>> callback)
-        {
-            onValueChanged += callback;
-        }
-
-        public void UnregisterValueChangedCallback(EventCallback<ChangeEvent<SerializableTuple<TEnum, TObjectField>>> callback)
-        {
-            onValueChanged -= callback;
-        }
-
-        private EnumField enumField;
-        private ObjectField objectField;
-
-        public TupleField()
-        {
-            enumField = CreateEnumField((TEnum)default);
-            objectField = CreateObjectField((TObjectField)default, typeof(TObjectField));
-
-            Add(enumField);
-            Add(objectField);
-        }
-
-        public void SetValueWithoutNotify(SerializableTuple<TEnum, TObjectField> newValue)
-        {
-            enumField.SetValueWithoutNotify(newValue.Item1);
-            objectField.SetValueWithoutNotify(newValue.Item2);
-        }
-    }
-
-    public class TupleField<TEnum1, TEnum2, TEnum3> : VisualElement,
-        INotifyValueChanged<SerializableTuple<TEnum1, TEnum2, TEnum3>>
-        where TEnum1 : Enum where TEnum2 : Enum where TEnum3 : Enum
-    {
-        public SerializableTuple<TEnum1, TEnum2, TEnum3> value { get; set; }
-
-        private EnumField enumField1;
-        private EnumField enumField2;
-        private EnumField enumField3;
-        
-        public event EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> onValueChanged;
-
-        public void NotifyValueChanged(SerializableTuple<TEnum1, TEnum2, TEnum3> newValue)
-        {
-            onValueChanged?.Invoke(new ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>());
-        }
-
-        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> callback)
-        {
-            onValueChanged += callback;
-        }
-
-        public void UnregisterValueChangedCallback(EventCallback<ChangeEvent<SerializableTuple<TEnum1, TEnum2, TEnum3>>> callback)
-        {
-            onValueChanged -= callback;
-        }
-
-        public TupleField()
-        {
-            enumField1 = new EnumField();
-            enumField2 = new EnumField();
-            enumField3 = new EnumField();
-
-            Add(enumField1);
-            Add(enumField2);
-            Add(enumField3);
-        }
-
-        public void SetValueWithoutNotify(SerializableTuple<TEnum1, TEnum2, TEnum3> newValue)
-        {
-            enumField1.SetValueWithoutNotify(newValue.Item1);
-            enumField2.SetValueWithoutNotify(newValue.Item2);
-            enumField3.SetValueWithoutNotify(newValue.Item3);
-        }
     }
 }
