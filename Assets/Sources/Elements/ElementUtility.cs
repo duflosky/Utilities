@@ -362,8 +362,7 @@ public static class ElementUtility
 
         public TupleField()
         {
-            enumField = CreateEnumField();
-            enumField.Init((TEnum)default);
+            enumField = CreateEnumField((TEnum)default);
             objectField = CreateObjectField();
 
             Add(enumField);
